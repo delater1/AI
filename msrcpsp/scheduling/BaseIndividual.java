@@ -29,8 +29,9 @@ public class BaseIndividual implements Comparable<BaseIndividual> {
 
     public BaseIndividual(BaseIndividual baseIndividual) {
         this.schedule = new Schedule(baseIndividual.getSchedule());
-        this.schedule.setEvaluator(baseIndividual.getSchedule().getEvaluator());
-        this.setEvalValue(-1);
+        this.schedule.setEvaluator(baseIndividual.getSchedule().getEvaluator().getCopy(this.schedule));
+        this.duration = baseIndividual.getDuration();
+        this.cost = schedule.getEvaluator().getCost();
     }
 
     /**

@@ -1,5 +1,6 @@
 package msrcpsp.io;
 
+import msrcpsp.Configuration;
 import msrcpsp.Ga.Population;
 
 import java.io.FileWriter;
@@ -28,8 +29,19 @@ public class CsvWriter {
 
     public void writePopulationValues(NTimesRunAvgValues nTimesRunAvgValues, String filename) throws IOException {
         PrintWriter writer = new PrintWriter(new FileWriter(filename));
+        writer.write(getConfigurationDescrition() + "\n");
         Arrays.stream(nTimesRunAvgValues.getxRunsAvgValues()).map(this::getPopulationResultValuesString).map(s -> s + "\n").forEach(writer::write);
         writer.close();
+    }
+
+    private String getConfigurationDescrition() {
+        return "plik:" + Configuration.name + ";"
+                + "runs:" + Configuration.RUNS + ";"
+                + "population size:" + Configuration.POPULATION_SIZE + ";"
+                + "populations quantity:" + Configuration.NUMBER_OF_POPULATIONS + ";"
+                + "tournament size: " + Configuration.TOURNAMENT_SIZE + ";"
+                + "mutation probability: " + Configuration.MUTATION_PROBABILITY + ";"
+                + "crossover probability: " + Configuration.CROSSOVER_PROBABILITY;
     }
 
     private String getPopulationResultValuesString(PopulationResult populationResult) {

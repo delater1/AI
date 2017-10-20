@@ -21,7 +21,7 @@ public class Population {
     public Population(Population population) {
         individuals = new BaseIndividual[population.getSize()];
         for (int i = 0; i < this.getIndividuals().length; i++) {
-            individuals[i] = new BaseIndividual(population.getIndividuals()[i].getSchedule(), population.getIndividuals()[i].getSchedule().getEvaluator());
+            individuals[i] = new BaseIndividual(population.getIndividuals()[i]);
         }
     }
 
