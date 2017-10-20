@@ -30,9 +30,8 @@ public class IndividualGenerator {
         BaseIndividual individual = new BaseIndividual(schedule, evaluator);
         Schedule invidualSchedule = individual.getSchedule();
         Task[] tasks = invidualSchedule.getTasks();
-        List<Resource> resources;
         for(Task aTask : tasks){
-            resources = schedule.getCapableResources(aTask);
+            List<Resource> resources = schedule.getCapableResources(aTask);
             schedule.assign(aTask, resources.get((int) (random.nextDouble() * resources.size())));
         }
         return individual;

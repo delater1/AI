@@ -27,9 +27,10 @@ public class CsvWriter {
         return "Srednia" + ";" + "Najlepsza" + ";" + "Najgorsza" + "\n";
     }
 
-    public void writePopulationValues(NTimesRunAvgValues nTimesRunAvgValues, String filename) throws IOException {
+    public void writeValues(NTimesRunAvgValues nTimesRunAvgValues,double bestResult, String filename) throws IOException {
         PrintWriter writer = new PrintWriter(new FileWriter(filename));
         writer.write(getConfigurationDescrition() + "\n");
+        writer.write("Best result: " + bestResult + "\n");
         Arrays.stream(nTimesRunAvgValues.getxRunsAvgValues()).map(this::getPopulationResultValuesString).map(s -> s + "\n").forEach(writer::write);
         writer.close();
     }

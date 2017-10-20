@@ -62,7 +62,7 @@ public class RandomRunner {
 //        // save to a file
 //        CsvWriter csvWriter = new CsvWriter();
 //        try {
-//            csvWriter.writePopulationValues(nTimesRunAvgValues, writeFile + (System.currentTimeMillis() / 1000) + ".csv");
+//            csvWriter.writeValues(nTimesRunAvgValues, writeFile + (System.currentTimeMillis() / 1000) + ".csv");
 //        } catch (IOException e) {
 //            System.out.print("Writing to a file failed");
 //        }

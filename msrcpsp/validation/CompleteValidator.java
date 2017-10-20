@@ -23,6 +23,7 @@ public class CompleteValidator extends BaseValidator{
     for (BaseValidator validator : validators) {
       validator.validate(schedule);
       errorMessages.addAll(validator.errorMessages);
+//      System.out.println(validator.errorMessages);
     }
     if (errorMessages.isEmpty()) {
       return ValidationResult.SUCCESS;

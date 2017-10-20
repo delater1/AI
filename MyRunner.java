@@ -9,7 +9,8 @@ public class MyRunner {
     private static final Logger LOGGER = Logger.getLogger(Runner.class.getName());
 
     public static void main(String[] args) {
-        GARunner.run();
+        GARunner gaRunner = new GARunner();
+        gaRunner.run();
     }
 
 
