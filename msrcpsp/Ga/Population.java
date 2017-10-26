@@ -4,6 +4,7 @@ import msrcpsp.io.PopulationResult;
 import msrcpsp.scheduling.BaseIndividual;
 import msrcpsp.scheduling.greedy.Greedy;
 import msrcpsp.validation.BaseValidator;
+import msrcpsp.validation.ValidationResult;
 
 import java.util.Arrays;
 
@@ -18,10 +19,12 @@ public class Population {
         this.individuals = individuals;
     }
 
-    public Population(Population population) {
+    public Population(Population population, Greedy greedy) {
         individuals = new BaseIndividual[population.getSize()];
         for (int i = 0; i < this.getIndividuals().length; i++) {
             individuals[i] = new BaseIndividual(population.getIndividuals()[i].getSchedule(), population.getIndividuals()[i].getSchedule().getEvaluator());
+            greedy.buildTimestamps(individuals[i].getSchedule());
+            individuals[i].setDurationAndCost();
         }
     }
 
@@ -73,9 +76,11 @@ public class Population {
         return new PopulationResult(sum / individuals.length, best, worst);
     }
 
-    public void validate(BaseValidator validator){
+    public void validate(BaseValidator validator) {
         for (int i = 0; i < individuals.length; i++) {
-            System.out.println(validator.validate(individuals[i].getSchedule()));
+            if (validator.validate(individuals[i].getSchedule()) == ValidationResult.FAILURE) {
+                throw new RuntimeException("Invalid population");
+            }
         }
     }
 }

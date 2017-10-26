@@ -23,6 +23,7 @@ public class RandomGenerator {
         return (int) (random.nextDouble() * bound);
     }
 
+
     public double generateRandomDouble() {
         return random.nextDouble();
     }

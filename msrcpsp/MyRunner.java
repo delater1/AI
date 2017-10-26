@@ -1,3 +1,5 @@
+package msrcpsp;
+
 import msrcpsp.Ga.Crosser;
 import msrcpsp.Ga.Mutator;
 import msrcpsp.Ga.Population;
@@ -5,10 +7,7 @@ import msrcpsp.Generator.IndividualGenerator;
 import msrcpsp.Generator.PopulationGenerator;
 import msrcpsp.evaluation.BaseEvaluator;
 import msrcpsp.evaluation.DurationEvaluator;
-import msrcpsp.io.CsvWriter;
-import msrcpsp.io.MSRCPSPIO;
-import msrcpsp.io.NTimesRunAvgValues;
-import msrcpsp.io.RunResults;
+import msrcpsp.io.*;
 import msrcpsp.scheduling.Schedule;
 import msrcpsp.scheduling.greedy.Greedy;
 import msrcpsp.validation.BaseValidator;
@@ -27,33 +26,33 @@ public class MyRunner {
     private static final Logger LOGGER = Logger.getLogger(Runner.class.getName());
 
     public static void main(String[] args) {
-        RunResults[] testResults = new RunResults[Coniguration.RUNS];
+        RunResults[] testResults = new RunResults[Configuration.RUNS];
         MSRCPSPIO reader = new MSRCPSPIO();
-        Schedule schedule = reader.readDefinition(Coniguration.getDefinitionFileName());
+        Schedule schedule = reader.readDefinition(Configuration.getDefinitionFileName());
         if (null == schedule) {
-            LOGGER.log(Level.WARNING, "Could not read the Definition " + Coniguration.getDefinitionFileName());
+            LOGGER.log(Level.WARNING, "Could not read the Definition " + Configuration.getDefinitionFileName());
         }
 
         Greedy greedy = new Greedy(schedule.getSuccesors());
         BaseEvaluator evaluator = new DurationEvaluator(schedule);
         PopulationGenerator populationGenerator = new PopulationGenerator(new IndividualGenerator(schedule, evaluator));
-        Crosser crosser = new Crosser(Coniguration.TOURNAMENT_SIZE, Coniguration.CROSSOVER_PROBABILITY);
-        Mutator mutator = new Mutator(Coniguration.MUTATION_PROBABILITY);
+        Crosser crosser = new Crosser(Configuration.TOURNAMENT_SIZE, Configuration.CROSSOVER_PROBABILITY);
+        Mutator mutator = new Mutator(Configuration.MUTATION_PROBABILITY);
         BaseValidator validator = new CompleteValidator();
 
 
         for (int j = 0; j < testResults.length; j++) {
             System.out.println("RUN " + j + " ===================================================================");
-            Population[] populations = new Population[Coniguration.NUMBER_OF_POPULATIONS];
-            populations[0] = populationGenerator.generateRandomPopulation(Coniguration.POPULATION_SIZE);
+            Population[] populations = new Population[Configuration.NUMBER_OF_POPULATIONS];
+            populations[0] = populationGenerator.generateRandomPopulation(Configuration.POPULATION_SIZE);
             populations[0].evaluate(greedy);
-//            populations[0].validate(validator);
+            populations[0].validate(validator);
             for (int i = 1; i < populations.length; i++) {
-                populations[i] = new Population(populations[i - 1]);
-                populations[i].evaluate(greedy);
+                populations[i] = new Population(populations[i - 1], greedy);
+                populations[i].validate(validator);
                 crosser.cross(populations[i]);
                 mutator.mutatePopulation(populations[i]);
-//                populations[i].evaluate(greedy);
+                populations[i].evaluate(greedy);
                 System.out.println("Population " + i + " ----Avg: " + populations[i].getAvg() + " Best: " + populations[i].getBest() + " Worst: " + populations[i].getWorst());
             }
             testResults[j] = new RunResults(populations);
@@ -64,10 +63,26 @@ public class MyRunner {
         // save to a file
         CsvWriter csvWriter = new CsvWriter();
         try {
-            csvWriter.writePopulationValues(nTimesRunAvgValues, Coniguration.writeFile + (new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss").format(new Date(System.currentTimeMillis()))) + ".csv");
+            csvWriter.writePopulationValues(nTimesRunAvgValues, getBestResult(testResults), getDate());
         } catch (IOException e) {
             System.out.print("Writing to a file failed");
         }
+    }
+
+    private static String getDate() {
+        return Configuration.writeFile + (new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss").format(new Date(System.currentTimeMillis()))) + ".csv";
+    }
+
+    private static double getBestResult(RunResults[] testResults) {
+        double min = Double.MAX_VALUE;
+        for (RunResults testResult : testResults) {
+            for (PopulationResult populationResult : testResult.populationResults) {
+                if (min > populationResult.best) {
+                    min = populationResult.best;
+                }
+            }
+        }
+        return min;
     }
 
 

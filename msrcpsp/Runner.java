@@ -1,3 +1,5 @@
+package msrcpsp;
+
 import msrcpsp.evaluation.BaseEvaluator;
 import msrcpsp.evaluation.DurationEvaluator;
 import msrcpsp.io.MSRCPSPIO;
@@ -15,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Runner class to help with understanding of the library.
+ * msrcpsp.Runner class to help with understanding of the library.
  */
 public class Runner {
 

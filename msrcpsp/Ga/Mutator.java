@@ -32,7 +32,8 @@ public class Mutator {
         Task[] tasks = baseIndividual.getSchedule().getTasks();
         int taskCount = tasks.length;
         for (int i = 0; i < taskCount; i++) {
-            if (randomGenerator.generateRandomInt(100) <= (MUTATION_PROBABILITY * 100)) {
+            double roll = randomGenerator.generateRandomDouble();
+            if (roll < MUTATION_PROBABILITY) {
                 int chosenTaskIndex = randomGenerator.generateRandomInt(taskCount);
                 List<Resource> capableResources = baseIndividual.getSchedule().getCapableResources(tasks[chosenTaskIndex]);
                 int capableResourcesCount = capableResources.size();
