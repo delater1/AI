@@ -148,4 +148,19 @@ public class BaseIndividual implements Comparable<BaseIndividual> {
         }
         return Double.compare(this.getNormalDuration(), o.getNormalDuration());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BaseIndividual)) return false;
+
+        BaseIndividual that = (BaseIndividual) o;
+
+        return schedule.equals(that.schedule);
+    }
+
+    @Override
+    public int hashCode() {
+        return schedule.hashCode();
+    }
 }

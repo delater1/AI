@@ -439,4 +439,23 @@ public class Schedule {
     this.evaluator = evaluator;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Schedule)) return false;
+
+    Schedule schedule = (Schedule) o;
+    for (int i = 0; i < tasks.length; i++) {
+      if (tasks[i].getResourceId() != schedule.tasks[i].getResourceId())
+        return false;
+    }
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = Arrays.hashCode(tasks);
+    result = 31 * result + Arrays.hashCode(resources);
+    return result;
+  }
 }
