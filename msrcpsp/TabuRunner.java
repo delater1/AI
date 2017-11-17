@@ -2,6 +2,7 @@ package msrcpsp;
 
 import msrcpsp.Generator.IndividualGenerator;
 import msrcpsp.Generator.RandomGenerator;
+import msrcpsp.Tabu.TabuConfig;
 import msrcpsp.evaluation.BaseEvaluator;
 import msrcpsp.evaluation.DurationEvaluator;
 import msrcpsp.io.MSRCPSPIO;

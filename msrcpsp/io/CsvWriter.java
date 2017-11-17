@@ -2,11 +2,13 @@ package msrcpsp.io;
 
 import msrcpsp.Configuration;
 import msrcpsp.Ga.Population;
+import msrcpsp.Tabu.Result;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by korpa on 19.03.2017.
@@ -48,5 +50,17 @@ public class CsvWriter {
                 + "tournament size: " + Configuration.TOURNAMENT_SIZE + ";"
                 + "mutation probability: " + Configuration.MUTATION_PROBABILITY + ";"
                 + "crossover probability: " + Configuration.CROSSOVER_PROBABILITY;
+    }
+
+    public void write(String filepath,String descritionString, List<Result> results) {
+        try {
+            PrintWriter writer = new PrintWriter(new FileWriter(filepath));
+            writer.write(descritionString + "\n");
+            for (Result tabuResult : results) {
+                writer.write((tabuResult.getCurrent() + ";" + tabuResult.getBest() + '\n').replace(".",","));
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

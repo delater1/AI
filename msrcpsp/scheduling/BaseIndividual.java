@@ -47,9 +47,14 @@ public class BaseIndividual implements Comparable<BaseIndividual> {
     public void setNormalDurationAndCost() {
         BaseEvaluator evaluator = schedule.getEvaluator();
         // TODO: - get min cost / duration ?
+        this.duration = evaluator.getDuration();
         this.normalDuration = evaluator.getDuration() / (double) evaluator.getMaxDuration();
+        this.cost = evaluator.getCost();
         this.normalCost = evaluator.getCost() / (double) evaluator.getMaxCost();
+        this.evalValue = (normalDuration + normalCost);
+        int i = 0;
     }
+
 
     /**
      * Determines whether this individual dominates given
