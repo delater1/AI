@@ -4,11 +4,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TabuConfig {
-    public static int T = 10000;
-    public static int K = 200;
+    public static int T = 1000;
+    public static int K = 100;
     public static String definitionsFile = "assets/def/";
-    public static String name = "200_40_133_15.def";
-    public static int sinkingListSize = 20;
+    public static String name = "100_5_64_9.def";
+    public static int sinkingListSize = 200;
     public static String writeFile = "assets/results/tabu";
 
     public static String getDefinitionFileName() {

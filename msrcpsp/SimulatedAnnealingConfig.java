@@ -4,10 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class SimulatedAnnealingConfig {
-    public static int T = 100;
-    public static int K = 100;
+    public static int T = 500;
+    public static int K = 10;
     public static String definitionsFile = "assets/def/";
-    public static String name = "100_5_64_9.def";
+    public static String name = "200_40_133_15.def";
     public static String writeFile = "assets/results/simulatedAnnealing";
     public static int innerLoop = 100;
 

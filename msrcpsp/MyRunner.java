@@ -1,5 +1,6 @@
 package msrcpsp;
 
+import com.sun.org.apache.bcel.internal.generic.POP;
 import msrcpsp.Ga.Crosser;
 import msrcpsp.Ga.Mutator;
 import msrcpsp.Ga.Population;
@@ -43,19 +44,21 @@ public class MyRunner {
 
         for (int j = 0; j < testResults.length; j++) {
             System.out.println("RUN " + j + " ===================================================================");
-            Population[] populations = new Population[Configuration.NUMBER_OF_POPULATIONS];
-            populations[0] = populationGenerator.generateRandomPopulation(Configuration.POPULATION_SIZE);
-            populations[0].evaluate(greedy);
-            populations[0].validate(validator);
-            for (int i = 1; i < populations.length; i++) {
-                populations[i] = new Population(populations[i - 1], greedy);
-                populations[i].validate(validator);
-                crosser.cross(populations[i]);
-                mutator.mutatePopulation(populations[i]);
-                populations[i].evaluate(greedy);
-                System.out.println("Population " + i + " ----Avg: " + populations[i].getAvg() + " Best: " + populations[i].getBest() + " Worst: " + populations[i].getWorst());
+//            Population[] populations = new Population[Configuration.NUMBER_OF_POPULATIONS];
+            Population population1 = populationGenerator.generateRandomPopulation(Configuration.POPULATION_SIZE);
+            population1.evaluate(greedy);
+            population1.validate(validator);
+            for (int i = 1; i < Configuration.NUMBER_OF_POPULATIONS; i++) {
+                Population newPopulation = new Population(population1, greedy);
+                newPopulation.validate(validator);
+                crosser.cross(newPopulation);
+                mutator.mutatePopulation(newPopulation);
+                newPopulation.evaluate(greedy);
+                if (i == (Configuration.NUMBER_OF_POPULATIONS -1))
+                    System.out.println("Population " + i + " ----Avg: " + newPopulation.getAvg() + " Best: " + newPopulation.getBest() + " Worst: " + newPopulation.getWorst());
+                population1 = newPopulation;
             }
-            testResults[j] = new RunResults(populations);
+//            testResults[j] = new RunResults(populations);
         }
 
         NTimesRunAvgValues nTimesRunAvgValues = new NTimesRunAvgValues(testResults);

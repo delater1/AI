@@ -17,7 +17,7 @@ import java.util.List;
 
 public class SimulatedAnnealing {
     MSRCPSPIO reader = new MSRCPSPIO();
-    Schedule schedule = reader.readDefinition(Configuration.getDefinitionFileName());
+    Schedule schedule = reader.readDefinition(SimulatedAnnealingConfig.getDefinitionFileName());
     BaseEvaluator evaluator = new DurationEvaluator(schedule);
     IndividualGenerator individualGenerator = new IndividualGenerator(schedule, evaluator);
     Greedy greedy = new Greedy(schedule.getSuccesors());
@@ -25,10 +25,14 @@ public class SimulatedAnnealing {
 
 
     public static void main(String[] args) {
-        SimulatedAnnealing simulatedAnnealing = new SimulatedAnnealing();
-        List<Result> results = simulatedAnnealing.run();
-        CsvWriter csvWriter = new CsvWriter();
-        csvWriter.write(SimulatedAnnealingConfig.getFilePath(), SimulatedAnnealingConfig.getDescritionString(), results);
+        for (int i = 0; i < 10; i++) {
+            System.out.println("Run --" + i);
+
+            SimulatedAnnealing simulatedAnnealing = new SimulatedAnnealing();
+            List<Result> results = simulatedAnnealing.run();
+            CsvWriter csvWriter = new CsvWriter();
+            csvWriter.write(SimulatedAnnealingConfig.getFilePath(), SimulatedAnnealingConfig.getDescritionString(), results);
+        }
     }
 
     public List<Result> run() {
@@ -36,24 +40,25 @@ public class SimulatedAnnealing {
         List<Result> results = new ArrayList<>();
         BaseIndividual vc = individualGenerator.generateRandomIndividual();
         greedy.buildTimestamps(vc.getSchedule());
-        vc.setNormalDurationAndCost();
+        vc.setDurationAndCost();
         bestBest = vc;
-        for (int i = SimulatedAnnealingConfig.T; i > 0; i--) {
+        for (int i = SimulatedAnnealingConfig.T; i > 0; i-=5) {
             for (int j = 0; j < SimulatedAnnealingConfig.innerLoop; j++) {
                 List<BaseIndividual> neighbours = generateRandomNeighbours(vc, SimulatedAnnealingConfig.K);
                 BaseIndividual vn = findRandom(neighbours);
-                if (vn != null && vn.getEvalValue() < vc.getEvalValue()) {
+                if (vn != null && vn.getDuration() <= vc.getDuration()) {
                     vc = vn;
-                } else if (vc.getEvalValue() != vn.getEvalValue() && randomGenerator.generateRandomDouble() < getAnnealing(vc.getEvalValue(), i, vn.getEvalValue())) {
+                } else if (vc.getDuration() != vn.getDuration() && randomGenerator.generateRandomDouble() < getAnnealing(vc.getDuration(), i, vn.getDuration())) {
                     vc = vn;
                 }
-                if(bestBest.getEvalValue() > vc.getEvalValue()){
+                results.add(new Result(bestBest.getDuration(), vc.getDuration()));
+                if(bestBest.getDuration() > vc.getDuration()){
                     bestBest=vc;
                 }
-                results.add(new Result(bestBest.getEvalValue(), vn.getEvalValue()));
-//                System.out.println("bestIn neighbouts:  " + vn.getEvalValue() + " best: " + vc.getEvalValue());
+//                System.out.println("bestIn neighbouts:  " + vn.getDuration()() + " best: " + vc.getDuration()());
             }
         }
+        System.out.println("best : " + bestBest.getDuration());
         return results;
     }
 
@@ -62,15 +67,15 @@ public class SimulatedAnnealing {
     }
 
     private double getAnnealing(double vcEval, int i, double vnEval) {
-        double res = Math.exp(((vcEval - vnEval)*10000 / ((double) i)));
-        System.out.println(res);
+        double res = Math.exp(((vcEval - vnEval) *100/ ((double) i)));
+//        System.out.println(res);
         return res;
     }
 
 
     private BaseIndividual findBest(List<BaseIndividual> neighbours) {
         BaseIndividual baseIndividual = neighbours.stream().min((o1, o2) -> {
-            if (o1.getEvalValue() < o2.getEvalValue())
+            if (o1.getDuration() < o2.getDuration())
                 return -1;
             return 1;
         }).orElse(null);
@@ -83,7 +88,7 @@ public class SimulatedAnnealing {
             BaseIndividual baseIndividual = new BaseIndividual(base.getSchedule(), base.getSchedule().getEvaluator());
             mutate(baseIndividual);
             greedy.buildTimestamps(baseIndividual.getSchedule());
-            baseIndividual.setNormalDurationAndCost();
+            baseIndividual.setDurationAndCost();
             neighbours.add(baseIndividual);
         }
         return neighbours;

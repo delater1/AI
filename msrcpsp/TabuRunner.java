@@ -17,7 +17,7 @@ import java.util.List;
 
 public class TabuRunner {
     MSRCPSPIO reader = new MSRCPSPIO();
-    Schedule schedule = reader.readDefinition(Configuration.getDefinitionFileName());
+    Schedule schedule = reader.readDefinition(TabuConfig.getDefinitionFileName());
     BaseEvaluator evaluator = new DurationEvaluator(schedule);
     IndividualGenerator individualGenerator = new IndividualGenerator(schedule, evaluator);
     Greedy greedy = new Greedy(schedule.getSuccesors());
@@ -25,8 +25,11 @@ public class TabuRunner {
 
 
     public static void main(String[] args) {
-        TabuRunner tabuRunner = new TabuRunner();
-        tabuRunner.run();
+        for (int i = 0; i < 10; i++) {
+            System.out.println("RUN -- " + i);
+            TabuRunner tabuRunner = new TabuRunner();
+            tabuRunner.run();
+        }
     }
 
     public void run() {
@@ -42,7 +45,8 @@ public class TabuRunner {
             if (bestInNeighbours != null && bestInNeighbours.getDuration() <= vc.getDuration()) {
                 vc = bestInNeighbours;
             }
-            System.out.println(" duration: " + vc.getDuration());
+            if (i == (TabuConfig.T -1))
+                System.out.println(" duration: " + vc.getDuration());
             tabu.add(bestInNeighbours);
         }
     }

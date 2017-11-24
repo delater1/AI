@@ -52,7 +52,6 @@ public class BaseIndividual implements Comparable<BaseIndividual> {
         this.cost = evaluator.getCost();
         this.normalCost = evaluator.getCost() / (double) evaluator.getMaxCost();
         this.evalValue = (normalDuration + normalCost);
-        int i = 0;
     }
 
 
